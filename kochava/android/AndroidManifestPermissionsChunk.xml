@@ -6,7 +6,7 @@
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
  
 <!-- Optional: Paired and Connected Bluetooth Device Collection. -->
-<uses-permission android:name="android.permission.BLUETOOTH"/>
+<!-- <uses-permission android:name="android.permission.BLUETOOTH"/> -->
  
 <!-- Optional: Email Attribution Collection. Note: This feature must also be enabled on the Kochava dashboard before collection will occur. -->
 <uses-permission android:name="android.permission.GET_ACCOUNTS" />
