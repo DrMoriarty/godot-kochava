@@ -16,7 +16,7 @@ NSDictionary *convertFromDictionary(const Dictionary& dict)
         Variant key = dict.get_key_at_index(i);
         Variant val = dict.get_value_at_index(i);
         if(key.get_type() == Variant::STRING) {
-            NSString *strKey = [NSString stringWithUTF8String:((String)key).utf8().ptr()];
+            NSString *strKey = [NSString stringWithUTF8String:((String)key).utf8().get_data()];
             if(val.get_type() == Variant::INT) {
                 int i = (int)val;
                 result[strKey] = @(i);
@@ -24,7 +24,7 @@ NSDictionary *convertFromDictionary(const Dictionary& dict)
                 double d = (double)val;
                 result[strKey] = @(d);
             } else if(val.get_type() == Variant::STRING) {
-                NSString *s = [NSString stringWithUTF8String:((String)val).utf8().ptr()];
+                NSString *s = [NSString stringWithUTF8String:((String)val).utf8().get_data()];
                 result[strKey] = s;
             } else if(val.get_type() == Variant::BOOL) {
                 BOOL b = (bool)val;
@@ -51,23 +51,23 @@ GodotKochava::~GodotKochava()
 }
 
 void GodotKochava::init(const String& key) {
-    NSString *appKey = [NSString stringWithUTF8String:key.utf8().ptr()];
+    NSString *appKey = [NSString stringWithUTF8String:key.utf8().get_data()];
     [KochavaTracker.shared configureWithParametersDictionary:@{kKVAParamAppGUIDStringKey: appKey} delegate:nil];
 }
 
 void GodotKochava::sendEvent(const String& event) {
-    NSString *eventName = [NSString stringWithUTF8String:event.utf8().ptr()];
+    NSString *eventName = [NSString stringWithUTF8String:event.utf8().get_data()];
     [KochavaTracker.shared sendEventWithNameString:eventName infoString:nil];
 }
 
 void GodotKochava::sendEventWithParam(const String& event, const String& param) {
-    NSString *eventName = [NSString stringWithUTF8String:event.utf8().ptr()];
-    NSString *str = [NSString stringWithUTF8String:(param).utf8().ptr()];
+    NSString *eventName = [NSString stringWithUTF8String:event.utf8().get_data()];
+    NSString *str = [NSString stringWithUTF8String:(param).utf8().get_data()];
     [KochavaTracker.shared sendEventWithNameString:eventName infoString:str];
 }
 
 void GodotKochava::sendEventWithParams(const String& event, const Dictionary& params) {
-    NSString *eventName = [NSString stringWithUTF8String:event.utf8().ptr()];
+    NSString *eventName = [NSString stringWithUTF8String:event.utf8().get_data()];
     NSDictionary *dict = convertFromDictionary(params);
     [KochavaTracker.shared sendEventWithNameString:eventName infoDictionary:dict];
 }
@@ -85,7 +85,7 @@ void GodotKochava::sendStandardEventWithParam(int eventId, const String& param) 
         ERR_PRINT("Invalid standard event Id");
     }
     KochavaEvent *event = [KochavaEvent eventWithEventTypeEnum:(KochavaEventTypeEnum)eventId];
-    NSString *str = [NSString stringWithUTF8String:(param).utf8().ptr()];
+    NSString *str = [NSString stringWithUTF8String:(param).utf8().get_data()];
     event.infoString = str;
     [KochavaTracker.shared sendEvent:event];
 }
@@ -104,9 +104,9 @@ void GodotKochava::_bind_methods()
 {
     ClassDB::bind_method(D_METHOD("init", "key"), &GodotKochava::init);
     ClassDB::bind_method(D_METHOD("event", "name"), &GodotKochava::sendEvent);
-    ClassDB::bind_method(D_METHOD("event_with_param", "name", "param"), &GodotKochava::sendEventWithParams);
+    ClassDB::bind_method(D_METHOD("event_with_param", "name", "param"), &GodotKochava::sendEventWithParam);
     ClassDB::bind_method(D_METHOD("event_with_params", "name", "params"), &GodotKochava::sendEventWithParams);
     ClassDB::bind_method(D_METHOD("standard_event", "eventId"), &GodotKochava::sendStandardEvent);
-    ClassDB::bind_method(D_METHOD("standard_event_with_param", "eventId", "param"), &GodotKochava::sendStandardEventWithParams);
+    ClassDB::bind_method(D_METHOD("standard_event_with_param", "eventId", "param"), &GodotKochava::sendStandardEventWithParam);
     ClassDB::bind_method(D_METHOD("standard_event_with_params", "eventId", "params"), &GodotKochava::sendStandardEventWithParams);
 }
