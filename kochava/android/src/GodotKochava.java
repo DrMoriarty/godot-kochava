@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import com.kochava.base.Tracker;
 import com.kochava.base.Tracker.Configuration;
+import com.godot.game.BuildConfig;
 
 public class GodotKochava extends Godot.SingletonBase {
 
@@ -45,7 +46,11 @@ public class GodotKochava extends Godot.SingletonBase {
             @Override
             public void run() {
                 try {
-                    Tracker.configure(new Configuration(activity.getApplicationContext()).setAppGuid(key));
+                    Tracker.configure(new Configuration(activity.getApplicationContext())
+                                      .setAppGuid(key)
+                                      //.setLogLevel(Tracker.LOG_LEVEL_TRACE)
+                                      .setLogLevel(BuildConfig.DEBUG ? Tracker.LOG_LEVEL_DEBUG : Tracker.LOG_LEVEL_INFO)
+                                      );
                 } catch (Exception e) {
                     Log.e("godot", "Failed to initialize KochavaSdk: " + e.getMessage()); 
                 }
