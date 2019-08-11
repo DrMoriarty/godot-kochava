@@ -112,7 +112,8 @@ public class GodotKochava extends Godot.SingletonBase {
             Log.w("godot", "Standard event "+eventId+" with null params");
         } else {
             for(String key: params.get_keys()) {
-                event.addCustom(key, params.get(key).toString());
+                if(params.get(key) != null)
+                    event.addCustom(key, params.get(key).toString());
             }
         }
         Tracker.sendEvent(event);
